@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(MSBuildThisFileDirectory)..\..\..\build\common.props" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Microsoft.ML.Probabilistic.Learners.ClassifierModels</AssemblyName>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE</DefineConstants>
+    <RootNamespace>Microsoft.ML.Probabilistic.Learners.BayesPointMachineClassifierInternal</RootNamespace>
+    <Configurations>Debug;Release;DebugFull;DebugCore;ReleaseFull;ReleaseCore</Configurations>
+    <StartupObject>Microsoft.ML.Probabilistic.Learners.BayesPointMachineClassifierInternal.Program</StartupObject>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(Configuration)'=='DebugFull' OR '$(Configuration)'=='ReleaseFull'">
+      <PropertyGroup>
+        <TargetFramework>net461</TargetFramework>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(Configuration)'=='DebugCore' OR '$(Configuration)'=='ReleaseCore'">
+      <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <TargetFrameworks>net5.0;net461</TargetFrameworks>
+        <!-- No need to generate code twice -->
+        <IgnorePostBuildNetCore>true</IgnorePostBuildNetCore>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0'">
+    <RunPostBuildNetCore Condition="$(IgnorePostBuildNetCore) != 'true'">true</RunPostBuildNetCore>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461'">
+    <RunPostBuildNetFull>true</RunPostBuildNetFull>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' OR '$(Configuration)|$(Platform)'=='DebugFull|AnyCPU' OR '$(Configuration)|$(Platform)'=='DebugCore|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' OR '$(Configuration)|$(Platform)'=='ReleaseFull|AnyCPU' OR '$(Configuration)|$(Platform)'=='ReleaseCore|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugFull|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Microsoft.ML.Probabilistic.Learners.ClassifierModels.XML</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Compiler\Compiler.csproj" />
+    <ProjectReference Include="..\..\Runtime\Runtime.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK'))">
+    <ProjectReference Include="..\..\Visualizers\Windows\Visualizers.Windows.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Shared\SharedAssemblyFileVersion.cs" />
+    <Compile Include="..\..\Shared\SharedAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <Target Name="PostBuildNetFull" AfterTargets="PostBuildEvent" Condition="'$(RunPostBuildNetFull)' == 'true'">
+    <Exec Command="&quot;$(TargetPath)&quot; &quot;$([System.IO.Path]::Combine($(SolutionDir),'src', 'Learners', 'Classifier', 'BayesPointMachineClassifierInternal', 'GeneratedAlgorithms'))&quot;" />
+  </Target>
+
+  <Target Name="PostBuildNetCore" AfterTargets="PostBuildEvent" Condition="'$(RunPostBuildNetCore)' == 'true'">
+    <Exec Command="dotnet &quot;$(TargetPath)&quot; &quot;$([System.IO.Path]::Combine($(SolutionDir),'src', 'Learners', 'Classifier', 'BayesPointMachineClassifierInternal', 'GeneratedAlgorithms'))&quot;" />
+  </Target>
+</Project>

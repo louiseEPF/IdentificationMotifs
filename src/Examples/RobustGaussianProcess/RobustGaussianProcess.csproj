@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(MSBuildThisFileDirectory)..\..\..\build\common.props" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE</DefineConstants>
+    <Configurations>Debug;Release;DebugFull;DebugCore;ReleaseFull;ReleaseCore</Configurations>
+    <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsWindows)'=='true'">
+    <DefineConstants>WINDOWS</DefineConstants>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(Configuration)'=='DebugFull' OR '$(Configuration)'=='ReleaseFull'">
+      <PropertyGroup>
+        <TargetFramework>net461</TargetFramework>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(Configuration)'=='DebugCore' OR '$(Configuration)'=='ReleaseCore'">
+      <PropertyGroup Condition="'$(IsWindows)'=='true'">
+			  <TargetFramework>net5.0-windows</TargetFramework>
+		  </PropertyGroup>
+		  <PropertyGroup Condition="'$(IsWindows)'!='true'">
+        <TargetFramework>net5.0</TargetFramework>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+    	<PropertyGroup Condition="'$(IsWindows)'=='true'">
+        <TargetFrameworks>net5.0-windows;net461</TargetFrameworks>
+      </PropertyGroup>
+		  <PropertyGroup Condition="'$(IsWindows)'!='true'">
+			  <TargetFramework>net5.0;net461</TargetFramework>
+		  </PropertyGroup>
+	  </Otherwise>
+  </Choose>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' OR '$(Configuration)|$(Platform)'=='DebugFull|AnyCPU' OR '$(Configuration)|$(Platform)'=='DebugCore|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU' OR '$(Configuration)|$(Platform)'=='ReleaseFull|AnyCPU' OR '$(Configuration)|$(Platform)'=='ReleaseCore|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugFull|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Compiler\Compiler.csproj" />
+    <ProjectReference Include="..\..\Runtime\Runtime.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Shared\SharedAssemblyFileVersion.cs" />
+    <Compile Include="..\..\Shared\SharedAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsWindows)'=='true'">
+    <PackageReference Include="OxyPlot.Wpf" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\insurance.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

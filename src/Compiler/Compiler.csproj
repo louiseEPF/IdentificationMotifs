@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(MSBuildThisFileDirectory)..\..\build\nuget-properties.props" />
+  
+  <PropertyGroup>
+    <Description>Infer.NET is a framework for running Bayesian inference in graphical models. It can also be used for probabilistic programming. This package contains the Infer.NET Compiler, which takes model descriptions written using the Infer.NET API and converts them into inference code.</Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>$(AssemblyNamePrefix)Microsoft.ML.Probabilistic.Compiler</AssemblyName>
+    <PackageId>$(AssemblyName)$(NuGetPackageIdSuffix)</PackageId>
+    <DefineConstants>TRACE;SUPPRESS_XMLDOC_WARNINGS, SUPPRESS_UNREACHABLE_CODE_WARNINGS, SUPPRESS_AMBIGUOUS_REFERENCE_WARNINGS</DefineConstants>
+    <NoWarn>1591</NoWarn>
+    <RootNamespace>Microsoft.ML.Probabilistic</RootNamespace>
+		<RoslynSupport>true</RoslynSupport>
+		<CodeDomSupport>true</CodeDomSupport>
+    <Configurations>Debug;Release</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(RoslynSupport)' == 'true'">
+    <DefineConstants>$(DefineConstants);ROSLYN</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(CodeDomSupport)' == 'true'">
+    <DefineConstants>$(DefineConstants);CODEDOM</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyNamePrefix)Microsoft.ML.Probabilistic.Compiler.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Runtime\Runtime.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Condition="$(DefineConstants.Contains('ROSLYN'))" Include="Microsoft.CodeAnalysis.CSharp" Version="2.10.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <PackageReference Condition="$(DefineConstants.Contains('CODEDOM'))" Include="System.CodeDom" Version="4.4.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Infer\Infer.ico" />
+    <EmbeddedResource Include="Infer\Infer.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\SharedAssemblyFileVersion.cs" />
+    <Compile Include="..\Shared\SharedAssemblyInfo.cs" />
+  </ItemGroup>
+</Project>

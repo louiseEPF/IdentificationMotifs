@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!--
+    This file contains properties common to most projects.
+    For a project that should be packaged using NuGet, use nuget-properties.props instead.
+    -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)\..\Infer.snk</AssemblyOriginatorKeyFile>
+    
+    <!-- By default we do not want projects to be packaged using NuGet. -->
+    <IsPackable>false</IsPackable>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)\..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <SharedVersionOutputDirectory>$(MSBuildThisFileDirectory)\src\Shared</SharedVersionOutputDirectory>
+
+    <!--
+      Generate assembly info so that IntervalsVisibleTo
+      can be specified in ProjectFile, where we have access to
+      AssemblyNamePrefix
+    -->
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    
+    <!--
+      Disable generation of assembly properties where their values
+      differ for NuGet packages and assemblies. For these
+      properties are defined in AssemblyInfo files.
+    -->
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+
+    <!--
+      We currently generate versions manually using SharedAssemblyInfo.cs
+      and a tool that updates it.
+    -->
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+  </PropertyGroup>
+</Project>

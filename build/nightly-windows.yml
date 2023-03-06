@@ -1,0 +1,113 @@
+# Licensed to the .NET Foundation under one or more agreements.
+# The .NET Foundation licenses this file to you under the MIT license.
+# See the LICENSE file in the project root for more information.
+
+# Nightly build for Windows. Tests on x86 and x64. Produces NuGet packages
+
+name: 0.4.$(Date:yyMM).$(Date:dd)$(Rev:rr)
+
+resources:
+- repo: self
+  clean: true
+  
+trigger: none # disable CI build
+
+pool:
+  vmImage: 'windows-2019'
+
+# Cannot use matrix strategy to create jobs for different platforms, 
+# since then the platform is given as a variable which cannot be passed as a parameter to a template,
+# because templates are actualized at a very early stage when the variable has no value yet.
+jobs:
+- job: Win64_Build_Test
+  displayName: 'Windows: Build and Test (x64)'
+  timeoutInMinutes: 180
+
+  steps:
+  - template: windows-msbuild.yml
+    parameters:
+      BuildConfiguration: '$(BuildConfiguration)'  
+      BuildNumber: '$(Build.BuildNumber)'
+
+  - template: vstest-fast.yml
+    parameters:
+      Platform: 'x64'
+
+- job: Win32_Build_Test
+  displayName: 'Windows: Build and Test (x86)'
+  timeoutInMinutes: 180
+
+  steps:
+  - template: windows-msbuild.yml
+    parameters:
+      BuildConfiguration: '$(BuildConfiguration)'  
+      BuildNumber: '$(Build.BuildNumber)'
+
+  - template: vstest-fast.yml
+    parameters:
+      Platform: 'x86'
+
+
+- job: Win_Evaluator
+  displayName: 'Windows: Running Evaluator'
+  timeoutInMinutes: 180
+
+  steps:
+  - template: windows-msbuild.yml
+    parameters:
+      BuildConfiguration: '$(BuildConfiguration)'  
+      BuildNumber: '$(Build.BuildNumber)'
+
+  - template: evaluator-netcore.yml
+    parameters:
+      Configuration: '$(BuildConfiguration)'
+
+  - template: evaluator-netframework.yml
+    parameters:
+      Configuration: '$(BuildConfiguration)'
+
+
+- job: Package_Publish
+  displayName: 'Package and Publish'
+  timeoutInMinutes: 30
+  dependsOn: 
+  - Win64_Build_Test
+  - Win32_Build_Test
+  - Win_Evaluator
+  condition: eq(variables['BuildConfiguration'], 'Release')
+
+  steps:
+  - template: windows-msbuild.yml
+    parameters:
+      BuildConfiguration: '$(BuildConfiguration)'  
+      BuildNumber: '$(Build.BuildNumber)'
+
+  - task: Bash@3
+    displayName: 'Gathering built assemblies'
+    condition: eq(variables['BuildConfiguration'], 'Release')
+    inputs:
+      filePath: build/copyassemblies.sh
+      arguments: ../bin $(BuildConfiguration)
+      workingDirectory: build
+
+  - task: NuGetCommand@2
+    displayName: 'Creating NuGet packages'
+    condition: eq(variables['BuildConfiguration'], 'Release')
+    inputs:
+      command: pack
+      packagesToPack: build/*.nuspec
+      includeSymbols: true
+      buildProperties: version=$(Build.BuildNumber);bin=../bin
+
+  - task: CopyFiles@2
+    displayName: 'Copying build artifacts'
+    condition: eq(variables['BuildConfiguration'], 'Release')
+    inputs:
+      sourceFolder: bin
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publishing build artifacts'
+    condition: eq(variables['BuildConfiguration'], 'Release')
+    inputs:
+      artifactName: 'Everything'

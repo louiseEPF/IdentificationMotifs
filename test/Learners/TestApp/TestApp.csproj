@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(MSBuildThisFileDirectory)..\..\..\build\common.props" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Microsoft.ML.Probabilistic.Learners.TestApp</AssemblyName>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE</DefineConstants>
+    <RootNamespace>Microsoft.ML.Probabilistic.Learners.TestApp</RootNamespace>
+    <Configurations>Debug;Release;DebugFull;DebugCore;ReleaseFull;ReleaseCore</Configurations>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(Configuration)'=='DebugFull' OR '$(Configuration)'=='ReleaseFull'">
+      <PropertyGroup>
+        <TargetFramework>net461</TargetFramework>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(Configuration)'=='DebugCore' OR '$(Configuration)'=='ReleaseCore'">
+      <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <TargetFrameworks>net5.0;net461</TargetFrameworks>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' OR '$(Configuration)|$(Platform)'=='DebugFull|AnyCPU' OR '$(Configuration)|$(Platform)'=='DebugCore|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' OR '$(Configuration)|$(Platform)'=='ReleaseFull|AnyCPU' OR '$(Configuration)|$(Platform)'=='ReleaseCore|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Compiler\Compiler.csproj" />
+    <ProjectReference Include="..\..\..\src\Runtime\Runtime.csproj" />
+    <ProjectReference Include="..\..\..\src\Learners\Core\Core.csproj" />
+    <ProjectReference Include="..\..\..\src\Learners\Classifier\Classifier.csproj" />
+    <ProjectReference Include="..\LearnersTests\LearnersTests.csproj" />
+    <ProjectReference Include="..\..\..\src\Learners\Recommender\Recommender.csproj" />
+  </ItemGroup>
+</Project>

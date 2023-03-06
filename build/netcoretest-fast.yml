@@ -1,0 +1,26 @@
+# Licensed to the .NET Foundation under one or more agreements.
+# The .NET Foundation licenses this file to you under the MIT license.
+# See the LICENSE file in the project root for more information.
+
+# Template for running fast test suite (~30 minutes) on .NET Core platform
+
+parameters:
+  Configuration: 'ReleaseCore' 
+
+steps:
+# TODO: Use .NET Core CLI Task instead: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops
+- task: Bash@3
+  displayName: 'Running tests'
+  inputs:
+    filePath: test/netcoretest.sh
+    workingDirectory: test
+    arguments: ${{ parameters.Configuration }}
+    displayName: Run tests
+    continueOnError: true
+    
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml
+- task: PublishTestResults@2
+  displayName: 'Publishing test results'
+  inputs:
+    testResultsFormat: vstest
+    testResultsFiles: 'test/**/netcoretest-result*.trx'

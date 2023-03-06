@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(MSBuildThisFileDirectory)..\..\build\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Microsoft.ML.Probabilistic.FSharp</AssemblyName>
+    <Configurations>Debug;Release</Configurations>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Microsoft.ML.Probabilistic.FSharp.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" Version="4.7.2" />
+    <PackageReference Update="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Runtime\Runtime.csproj" />
+    <ProjectReference Include="..\Compiler\Compiler.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="FSharpWrapper.fs" />
+    <Compile Include="$(SolutionDir)src\Shared\SharedAssemblyFileVersion.fs">
+      <Link>SharedAssemblyFileVersion.fs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,22 @@
+# Licensed to the .NET Foundation under one or more agreements.
+# The .NET Foundation licenses this file to you under the MIT license.
+# See the LICENSE file in the project root for more information.
+
+# PR build and test Infer.NET using .NET Core
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk' 
+    version: '5.x'
+
+- script: |
+    dotnet build /p:DisableImplicitNuGetFallbackFolder=true --configuration $(buildConfiguration)Core Infer.sln
+  displayName: Build Solution
+    
+- template: netcoretest-fast.yml
+  parameters:
+    Configuration: '$(buildConfiguration)Core'

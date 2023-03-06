@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Evaluator": {
+      "commandName": "Project",
+      "commandLineArgs": "InferNetRunsOnly.xml"
+    }
+  }
+}
