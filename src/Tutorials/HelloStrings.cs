@@ -23,13 +23,19 @@ namespace Microsoft.ML.Probabilistic.Tutorials
 
             if (engine.Algorithm is Algorithms.ExpectationPropagation)
             {
-                Console.WriteLine("str1: {0}", engine.Infer(str1));
+                //Console.WriteLine("str1: {0}", engine.Infer(str1));
                 Console.WriteLine("str2: {0}", engine.Infer(str2));
 
-                var distOfStr1 = engine.Infer<StringDistribution>(str1);
-                foreach (var s in new[] { "Hello", "Hello uncertain", "Hello uncertain world" })
+                //var distOfStr1 = engine.Infer<StringDistribution>(str1);
+                //foreach (var s in new[] { "Hello", "Hello uncertain", "Hello uncertain world" })
+                //{
+                //    Console.WriteLine("P(str1 = '{0}') = {1}", s, distOfStr1.GetProb(s));
+                //}
+
+                var distOfStr2 = engine.Infer<StringDistribution>(str2);
+                foreach (var s in new[] { "world", "uncertain world", "Hey mate, how are you ?" })
                 {
-                    Console.WriteLine("P(str1 = '{0}') = {1}", s, distOfStr1.GetProb(s));
+                    Console.WriteLine("P(str2 = '{0}') = {1}", s, distOfStr2.GetProb(s));
                 }
             }
             else

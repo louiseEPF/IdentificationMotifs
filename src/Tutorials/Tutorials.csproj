@@ -134,6 +134,7 @@
     <Content Include="Infer.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <PackageReference Include="Microsoft.ML.Probabilistic" Version="0.4.2301.301" />
     <EmbeddedResource Update="ExamplesViewer.resx">
       <DependentUpon>ExamplesViewer.cs</DependentUpon>
     </EmbeddedResource>
