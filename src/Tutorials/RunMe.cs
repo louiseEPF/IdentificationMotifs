@@ -47,9 +47,9 @@ namespace Microsoft.ML.Probabilistic.Tutorials
 
             //String tutorials
 
-            //new HelloStrings().Run();
+            new HelloStrings().Run();
             //new StringFormat().Run();
-            new FindColor().Run();
+            //new FindColor().Run();
 
             //Applications
 
